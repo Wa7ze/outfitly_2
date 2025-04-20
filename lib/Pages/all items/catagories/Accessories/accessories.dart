@@ -1,7 +1,10 @@
+// ignore_for_file: deprecated_member_use, unused_element
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 
 class AccessoriesPage extends StatefulWidget {
+  final List<File> accessories;
   final List<File> bracelets;
   final List<File> handBags;
   final List<File> rings;
@@ -9,10 +12,11 @@ class AccessoriesPage extends StatefulWidget {
 
   const AccessoriesPage({
     super.key,
+    required this.accessories,
     required this.bracelets,
     required this.handBags,
     required this.rings,
-    required this.necklaces, required List<File> accessories,
+    required this.necklaces,
   });
 
   @override
@@ -112,8 +116,6 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
   }
 
   Widget _buildCategorySection(String categoryName, List<File> items) {
-    final isEditing = _isUniversalEditing || (_isEditingMap[categoryName] ?? false);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -124,17 +126,11 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
               categoryName,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              child: IconButton(
-                icon: Icon(isEditing ? Icons.delete : Icons.edit),
-                onPressed: isEditing
-                    ? () => _deleteSelectedItems(categoryName, items)
-                    : () => _toggleEditMode(categoryName),
-              ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                // Handle edit mode
+              },
             ),
           ],
         ),
@@ -142,7 +138,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         items.isEmpty
             ? Container(
                 height: 150,
-                color: Colors.grey[200], // Placeholder for items
+                color: Colors.grey[200],
                 child: const Center(
                   child: Text('No items to display'),
                 ),
@@ -153,48 +149,13 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    final isSelected = _selectedItems.contains(index);
-                    return GestureDetector(
-                      onTap: isEditing
-                          ? () {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedItems.remove(index);
-                                } else {
-                                  _selectedItems.add(index);
-                                }
-                              });
-                            }
-                          : () {
-                              // Handle item click (e.g., navigate to details page)
-                            },
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              items[index],
-                              fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
-                              color: isSelected
-                                  ? Colors.black.withOpacity(0.5)
-                                  : null,
-                              colorBlendMode: isSelected
-                                  ? BlendMode.darken
-                                  : null,
-                            ),
-                          ),
-                          if (isSelected)
-                            const Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Icon(
-                                Icons.check_circle,
-                                color: Colors.white,
-                              ),
-                            ),
-                        ],
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.file(
+                        items[index],
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
                       ),
                     );
                   },

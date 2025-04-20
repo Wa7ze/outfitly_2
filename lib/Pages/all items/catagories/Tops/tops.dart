@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -16,7 +18,8 @@ class TopsPage extends StatefulWidget {
   });
 
   @override
-  State<TopsPage> createState() => _TopsPageState();
+  @override
+  _TopsPageState createState() => _TopsPageState();
 }
 
 class _TopsPageState extends State<TopsPage> {
@@ -108,8 +111,6 @@ class _TopsPageState extends State<TopsPage> {
   }
 
   Widget _buildCategorySection(String categoryName, List<File> items) {
-    final isEditing = _isUniversalEditing || (_isEditingMap[categoryName] ?? false);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,17 +121,11 @@ class _TopsPageState extends State<TopsPage> {
               categoryName,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              child: IconButton(
-                icon: Icon(isEditing ? Icons.delete : Icons.edit),
-                onPressed: isEditing
-                    ? () => _deleteSelectedItems(categoryName, items)
-                    : () => _toggleEditMode(categoryName),
-              ),
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                // Handle edit mode
+              },
             ),
           ],
         ),
@@ -149,48 +144,13 @@ class _TopsPageState extends State<TopsPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    final isSelected = _selectedItems.contains(index);
-                    return GestureDetector(
-                      onTap: isEditing
-                          ? () {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedItems.remove(index);
-                                } else {
-                                  _selectedItems.add(index);
-                                }
-                              });
-                            }
-                          : () {
-                              // Handle item click (e.g., navigate to details page)
-                            },
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              items[index],
-                              fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
-                              color: isSelected
-                                  ? Colors.black.withOpacity(0.5)
-                                  : null,
-                              colorBlendMode: isSelected
-                                  ? BlendMode.darken
-                                  : null,
-                            ),
-                          ),
-                          if (isSelected)
-                            const Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Icon(
-                                Icons.check_circle,
-                                color: Colors.white,
-                              ),
-                            ),
-                        ],
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.file(
+                        items[index],
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
                       ),
                     );
                   },

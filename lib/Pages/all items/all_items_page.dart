@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:flutter_application_1/Pages/item_details_page.dart';
+import 'package:flutter_application_1/Pages/all%20items/item_details_page.dart';
 import 'package:flutter_application_1/Pages/all%20items/catagories/Tops/tops.dart';
 import 'package:flutter_application_1/Pages/all%20items/catagories/Bottoms/bottoms.dart';
 import 'package:flutter_application_1/Pages/all%20items/catagories/Accessories/accessories.dart';
 import 'package:flutter_application_1/Pages/all%20items/catagories/Shoes/shoes.dart';
+import 'package:flutter_application_1/Pages/clothing_item.dart';
+import 'package:flutter_application_1/Pages/clothing_storage.dart';
 
 class AllItemsPage extends StatefulWidget {
   final List<File> items;
@@ -33,6 +35,27 @@ class _AllItemsPageState extends State<AllItemsPage> {
   final Map<String, bool> _isEditingMap = {}; // Tracks editing state for each category
   final Set<int> _selectedItems = {}; // Tracks selected items for deletion
   bool _isUniversalEditing = false; // Tracks universal edit mode
+
+  List<ClothingItem> allItems = [];
+  List<ClothingItem> tops = [];
+  List<ClothingItem> tShirts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadItems();
+  }
+
+  Future<void> _loadItems() async {
+    // Load all items from ClothingStorage
+    allItems = await ClothingStorage.loadItems();
+
+    // Filter items into categories and subcategories
+    setState(() {
+      tops = allItems.where((item) => item.category == 'Tops').toList();
+      tShirts = tops.where((item) => item.subcategory == 'T-Shirts').toList();
+    });
+  }
 
   void _toggleEditMode(String categoryName) {
     setState(() {
@@ -103,10 +126,10 @@ class _AllItemsPageState extends State<AllItemsPage> {
               // Tops Section
               _buildCategorySection(
                 'Tops',
-                widget.tops,
+                tops.map((item) => File(item.imagePath)).toList(),
                 TopsPage(
                   tops: widget.tops,
-                  tShirts: [],
+                  tShirts: tShirts.map((item) => File(item.imagePath)).toList(),
                   shirts: [],
                   longSleeves: [],
                 ),

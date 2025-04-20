@@ -1,10 +1,11 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_element
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Pages/clalender%20page.dart';
-import 'package:flutter_application_1/Pages/magic_page.dart';
-import 'package:flutter_application_1/Pages/profile_page.dart';
-import 'package:flutter_application_1/Pages/wardrobe_page.dart';
+import 'package:flutter_application_1/Pages/The+Button/AddItemOptionsPage.dart';
+import 'package:flutter_application_1/Pages/Main%20pages/clalender%20page.dart';
+import 'package:flutter_application_1/Pages/Main%20pages/magic_page.dart';
+import 'package:flutter_application_1/Pages/Main%20pages/profile_page.dart';
+import 'package:flutter_application_1/Pages/Main%20pages/wardrobe_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -155,7 +156,7 @@ class _MainPageState extends State<MainPage> {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
-                onTap: _addItem, // Call the _addItem method
+                onTap: _showAddItemOptions, // Call the new method
                 child: Container(
                   width: 60,
                   height: 60,
@@ -181,6 +182,138 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showAddItemOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choose Photo from Library'),
+              onTap: () async {
+                Navigator.pop(context); // Close the bottom sheet
+                showDialog(
+                  context: context,
+                  builder: (_) => const AddItemOptionsPage(), // Navigate to AddItemOptionsPage
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Take a Photo'),
+              onTap: () {
+                Navigator.pop(context); // Close the bottom sheet
+                showDialog(
+                  context: context,
+                  builder: (_) => const AddItemOptionsPage(), // Navigate to AddItemOptionsPage
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCategorySelection(File imageFile) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String? selectedCategory;
+        String? selectedSubCategory;
+        List<String> subCategories = []; // List to hold subcategories based on the selected category
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Select Category and Subcategory'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Main Category Dropdown
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Category'),
+                    items: {
+                      'Tops': ['T-Shirts', 'LongSleeves', 'Shirts'],
+                      'Bottoms': ['Jeans', 'Shorts', 'Joggers'],
+                      'Accessories': ['Bracelets', 'Necklaces', 'Rings', 'HandBags'],
+                      'Shoes': ['Sneakers', 'Sandals', 'Boots'],
+                    }.keys.map((String category) {
+                      return DropdownMenuItem<String>(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                        subCategories = {
+                          'Tops': ['T-Shirts', 'LongSleeves', 'Shirts'],
+                          'Bottoms': ['Jeans', 'Shorts', 'Joggers'],
+                          'Accessories': ['Bracelets', 'Necklaces', 'Rings', 'HandBags'],
+                          'Shoes': ['Sneakers', 'Sandals', 'Boots'],
+                        }[value]!;
+                        selectedSubCategory = null; // Reset subcategory when category changes
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Subcategory Dropdown
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Subcategory'),
+                    items: subCategories.map((String subCategory) {
+                      return DropdownMenuItem<String>(
+                        value: subCategory,
+                        child: Text(subCategory),
+                      );
+                    }).toList(),
+                    onChanged: selectedCategory == null
+                        ? null // Disable dropdown if no category is selected
+                        : (value) {
+                            setState(() {
+                              selectedSubCategory = value;
+                            });
+                          },
+                    value: selectedSubCategory,
+                    disabledHint: const Text('Select a category first'),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (selectedCategory != null && selectedSubCategory != null) {
+                      setState(() {
+                        _items.add(imageFile); // Add the image to the items list
+                      });
+                      Navigator.pop(context); // Close the dialog
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please select both category and subcategory.')),
+                      );
+                    }
+                  },
+                  child: const Text('Add'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
