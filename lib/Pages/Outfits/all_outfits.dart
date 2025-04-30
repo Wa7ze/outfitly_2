@@ -1,4 +1,7 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Pages/Outfits/OutfitpageDyn.dart';
 import 'dart:io';
 
 import 'Catagories/Summer.dart';
@@ -25,22 +28,22 @@ class AllOutfitsPage extends StatefulWidget {
 }
 
 class _AllOutfitsPageState extends State<AllOutfitsPage> {
-  final Map<String, bool> _isEditingMap = {}; // Tracks editing state for each category
-  final Set<int> _selectedItems = {}; // Tracks selected items for deletion
-  bool _isUniversalEditing = false; // Tracks universal edit mode
+  final Map<String, bool> _isEditingMap = {};
+  final Set<int> _selectedItems = {};
+  bool _isUniversalEditing = false;
 
   void _toggleEditMode(String categoryName) {
     setState(() {
       _isEditingMap[categoryName] = !(_isEditingMap[categoryName] ?? false);
-      _selectedItems.clear(); // Clear selections when toggling modes
+      _selectedItems.clear();
     });
   }
 
   void _toggleUniversalEditMode() {
     setState(() {
       _isUniversalEditing = !_isUniversalEditing;
-      _isEditingMap.clear(); // Clear individual edit states
-      _selectedItems.clear(); // Clear selections
+      _isEditingMap.clear();
+      _selectedItems.clear();
     });
   }
 
@@ -48,30 +51,28 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
     setState(() {
       items.removeWhere((file) => _selectedItems.contains(items.indexOf(file)));
       _selectedItems.clear();
-      _isEditingMap[categoryName] = false; // Exit edit mode after deletion
+      _isEditingMap[categoryName] = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white), // Back button color set to white
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Navigate back
+            Navigator.pop(context);
           },
         ),
-        title: const Text(
-          'All Outfits',
-          style: TextStyle(color: Colors.white), // Set text color to white
-        ),
-        backgroundColor: Colors.black, // Set background color to black
+        title: const Text('All Outfits'),
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 8.0),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.iconTheme.color,
               borderRadius: BorderRadius.circular(4.0),
             ),
             child: SizedBox(
@@ -80,7 +81,7 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
               child: IconButton(
                 icon: Icon(
                   _isUniversalEditing ? Icons.delete : Icons.edit,
-                  color: Colors.black,
+                  color: theme.primaryColor,
                   size: 20,
                 ),
                 onPressed: _toggleUniversalEditMode,
@@ -95,20 +96,13 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Summer Section
-              _buildCategorySection('Summer', widget.summerOutfits, SummerOutfitsPage(outfits: widget.summerOutfits)),
+              _buildCategorySection('Summer', widget.summerOutfits),
               const SizedBox(height: 16),
-
-              // Winter Section
-              _buildCategorySection('Winter', widget.winterOutfits, WinterOutfitsPage(outfits: widget.winterOutfits)),
+              _buildCategorySection('Winter', widget.winterOutfits),
               const SizedBox(height: 16),
-
-              // Fall Section
-              _buildCategorySection('Fall', widget.fallOutfits, FallOutfitsPage(outfits: widget.fallOutfits)),
+              _buildCategorySection('Fall', widget.fallOutfits),
               const SizedBox(height: 16),
-
-              // Spring Section
-              _buildCategorySection('Spring', widget.springOutfits, SpringOutfitsPage(outfits: widget.springOutfits)),
+              _buildCategorySection('Spring', widget.springOutfits),
             ],
           ),
         ),
@@ -116,7 +110,8 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
     );
   }
 
-  Widget _buildCategorySection(String categoryName, List<File> items, Widget destinationPage) {
+  Widget _buildCategorySection(String categoryName, List<File> items) {
+    final theme = Theme.of(context);
     final isEditing = _isUniversalEditing || (_isEditingMap[categoryName] ?? false);
 
     return Column(
@@ -129,17 +124,22 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => destinationPage),
+                  MaterialPageRoute(
+                    builder: (context) => OutfitCategoryPage(
+                      categoryName: categoryName, // Pass the category name dynamically
+                      outfits: items,
+                    ),
+                  ),
                 );
               },
               child: Text(
                 categoryName,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: theme.colorScheme.secondary),
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.iconTheme.color,
                 borderRadius: BorderRadius.circular(4.0),
               ),
               child: IconButton(
@@ -155,7 +155,7 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
         items.isEmpty
             ? Container(
                 height: 150,
-                color: Colors.grey[200], // Placeholder for items
+                color: theme.scaffoldBackgroundColor,
                 child: const Center(
                   child: Text('No outfits to display'),
                 ),
@@ -178,9 +178,7 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
                                 }
                               });
                             }
-                          : () {
-                              // Handle item click (e.g., navigate to details page)
-                            },
+                          : () {},
                       child: Stack(
                         children: [
                           Padding(
@@ -190,12 +188,8 @@ class _AllOutfitsPageState extends State<AllOutfitsPage> {
                               fit: BoxFit.cover,
                               width: 100,
                               height: 100,
-                              color: isSelected
-                                  ? Colors.black.withOpacity(0.5)
-                                  : null,
-                              colorBlendMode: isSelected
-                                  ? BlendMode.darken
-                                  : null,
+                              color: isSelected ? theme.primaryColor.withOpacity(0.5) : null,
+                              colorBlendMode: isSelected ? BlendMode.darken : null,
                             ),
                           ),
                           if (isSelected)

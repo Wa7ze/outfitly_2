@@ -9,9 +9,7 @@ class SubDIn extends StatelessWidget {
   Widget build(BuildContext context) {
     // Mock data for demonstration
     final items = {
-      'Electronics': ['Laptop', 'Smartphone', 'Tablet'],
       'Clothing': ['Shirt', 'Pants', 'Jacket'],
-      'Books': ['Fiction', 'Non-fiction', 'Comics'],
     };
 
     // Get items for the selected subcategory

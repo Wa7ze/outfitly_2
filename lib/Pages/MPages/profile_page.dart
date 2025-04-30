@@ -6,7 +6,7 @@ import 'dart:io';
 import '../mesc/settings_page.dart';
 import 'package:flutter_application_1/Pages/all%20items/all_items_page.dart';
 import 'package:flutter_application_1/Pages/Outfits/all_outfits.dart';
-import 'package:flutter_application_1/Pages/all items/ItemDetails.dart'; // Ensure this is the correct path
+// Ensure this is the correct path
 
 class ProfilePage extends StatefulWidget {
   final VoidCallback onThemeChange;
@@ -20,8 +20,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   File? _profileImage;
-  bool _isEditing = false; // Tracks whether the user is in edit mode
-  final Set<int> _selectedItems = {}; // Tracks selected items for deletion
+// Tracks whether the user is in edit mode
+// Tracks selected items for deletion
 
   @override
   void initState() {
@@ -49,20 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // Load profile image path from local storage
   }
 
-  void _toggleEditMode() {
-    setState(() {
-      _isEditing = !_isEditing;
-      _selectedItems.clear(); // Clear selections when toggling modes
-    });
-  }
 
-  void _deleteSelectedItems() {
-    setState(() {
-      widget.items.removeWhere((file) => _selectedItems.contains(widget.items.indexOf(file)));
-      _selectedItems.clear();
-      _isEditing = false; // Exit edit mode after deletion
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,13 +157,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      _isEditing ? Icons.delete : Icons.edit,
-                      color: Theme.of(context).iconTheme.color, // Dynamic icon color
-                    ),
-                    onPressed: _isEditing ? _deleteSelectedItems : _toggleEditMode,
-                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -199,59 +179,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.items.length,
                         itemBuilder: (context, index) {
-                          final isSelected = _selectedItems.contains(index);
-                          return GestureDetector(
-                            onTap: _isEditing
-                                ? () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        _selectedItems.remove(index);
-                                      } else {
-                                        _selectedItems.add(index);
-                                      }
-                                    });
-                                  }
-                                : () {
-                                    // Navigate to the ItemDetailsPage
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ItemDetails(
-                                          item: widget.items[index],
-                                          itemName: 'Sample Item Name',
-                                          color: 'Sample Color',
-                                          size: 'Sample Size',
-                                          season: 'Sample Season',
-                                          tags: ['Sample Tag 1', 'Sample Tag 2'],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                            child: Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.file(
-                                    widget.items[index],
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
-                                    color: isSelected
-                                        ? Theme.of(context).colorScheme.primary.withOpacity(0.5) // Dynamic overlay color
-                                        : null,
-                                    colorBlendMode: isSelected ? BlendMode.darken : null,
-                                  ),
-                                ),
-                                if (isSelected)
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Icon(
-                                      Icons.check_circle,
-                                      color: Theme.of(context).colorScheme.onPrimary, // Dynamic icon color
-                                    ),
-                                  ),
-                              ],
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.file(
+                              widget.items[index],
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
                             ),
                           );
                         },
@@ -295,13 +229,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      _isEditing ? Icons.delete : Icons.edit,
-                      color: Theme.of(context).iconTheme.color, // Dynamic icon color
-                    ),
-                    onPressed: _isEditing ? _deleteSelectedItems : _toggleEditMode,
-                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -324,58 +251,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         scrollDirection: Axis.horizontal,
                         itemCount: widget.items.length,
                         itemBuilder: (context, index) {
-                          final isSelected = _selectedItems.contains(index);
-                          return GestureDetector(
-                            onTap: _isEditing
-                                ? () {
-                                    setState(() {
-                                      if (isSelected) {
-                                        _selectedItems.remove(index);
-                                      } else {
-                                        _selectedItems.add(index);
-                                      }
-                                    });
-                                  }
-                                : () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ItemDetails(
-                                          item: widget.items[index],
-                                          itemName: 'Sample Item Name',
-                                          color: 'Sample Color',
-                                          size: 'Sample Size',
-                                          season: 'Sample Season',
-                                          tags: ['Sample Tag 1', 'Sample Tag 2'],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                            child: Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.file(
-                                    widget.items[index],
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
-                                    color: isSelected
-                                        ? Theme.of(context).colorScheme.primary.withOpacity(0.5) // Dynamic overlay color
-                                        : null,
-                                    colorBlendMode: isSelected ? BlendMode.darken : null,
-                                  ),
-                                ),
-                                if (isSelected)
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Icon(
-                                      Icons.check_circle,
-                                      color: Theme.of(context).colorScheme.onPrimary, // Dynamic icon color
-                                    ),
-                                  ),
-                              ],
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.file(
+                              widget.items[index],
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
                             ),
                           );
                         },
