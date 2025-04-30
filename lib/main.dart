@@ -58,14 +58,14 @@ class _MyAppState extends State<MyApp> {
           error: Color(0xFFB00020), // Error Red
           onError: Color(0xFFFFFFFF), // White
           background: Color(0xFFFFFFFF), // White
-          onBackground: Color.fromARGB(255, 0, 0, 0), // black nav buttons
+          onBackground: Color.fromARGB(255, 0, 0, 0), // black
           surface: Color(0xFFF0F0F0), // Light Grey
-          onSurface: Color(0xFFFFFFFF), // White
+          onSurface: Color.fromARGB(255, 0, 0, 0), // Black nav buttons
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: const Color(0xFF3C096C), // Dark Purple
-        scaffoldBackgroundColor: const Color(0xFF000000), // Black
+        scaffoldBackgroundColor: const Color.fromARGB(255, 28, 27, 27), // Black
         colorScheme: const ColorScheme(
           brightness: Brightness.dark,
           primary: Color(0xFF3C096C), // Dark Purple

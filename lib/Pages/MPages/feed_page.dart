@@ -108,7 +108,14 @@ class _WardrobePageState extends State<WardrobePage> {
                       showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
-                          title: const Text('Delete Post'),
+                          title: Text(
+                            'Delete Post',
+                            style: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.light
+                                  ? Colors.black // Black in light theme
+                                  : Theme.of(context).textTheme.bodyLarge?.color, // Default in dark theme
+                            ),
+                          ),
                           content: const Text('Are you sure you want to delete this post?'),
                           actions: [
                             TextButton(
@@ -132,9 +139,16 @@ class _WardrobePageState extends State<WardrobePage> {
                   },
                   itemBuilder: (BuildContext context) {
                     return [
-                      const PopupMenuItem<String>(
+                      PopupMenuItem<String>(
                         value: 'delete',
-                        child: Text('Delete'),
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Theme.of(context).brightness == Brightness.light
+                                ? const Color(0xFF3C096C) // Dark Purple in light theme
+                                : Theme.of(context).iconTheme.color, // Default in dark theme
+                          ),
+                        ),
                       ),
                     ];
                   },
@@ -156,7 +170,7 @@ class _WardrobePageState extends State<WardrobePage> {
                         : Container(
                             height: 300,
                             width: double.infinity,
-                            color: Theme.of(context).colorScheme.background, // Dynamic placeholder background color
+                            color: Theme.of(context).colorScheme.surface, // Dynamic placeholder background color
                             child: Center(
                               child: Text(
                                 "Image not found",

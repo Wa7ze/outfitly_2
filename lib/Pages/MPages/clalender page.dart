@@ -174,6 +174,7 @@ class _FeedPageState extends State<FeedPage> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             backgroundColor: Theme.of(context).colorScheme.primary, // Dynamic button color
+                            foregroundColor: Colors.white, // Explicitly set text color to white
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
